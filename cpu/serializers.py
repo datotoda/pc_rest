@@ -37,3 +37,12 @@ class CpuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cpu
         fields = ('id', 'title', 'manufacturer', 'series', 'version', 'socket', 'cores', 'threads')
+
+
+class CpuShortSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(source='__str__')
+    socket = serializers.CharField(source='socket.title')
+
+    class Meta:
+        model = Cpu
+        fields = ('id', 'title', 'socket', 'cores', 'threads')
