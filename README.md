@@ -4,6 +4,6 @@
 
 ```python
 $ python3 manage.py shell
->>> from cpu.demo_data import main
+>>> from pc_rest.demo_data import main
 >>> main()
 ```
