@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # My Apps
     'cpu.apps.CpuConfig',
+    'motherboard.apps.MotherboardConfig',
     'general.apps.GeneralConfig',
 
     # Third Party Apps

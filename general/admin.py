@@ -1,5 +1,5 @@
 from django.contrib import admin
-from general.models import Manufacturer, Socket, SocketType
+from general.models import Manufacturer, Socket, SocketType, FormFactor, MemoryType
 
 
 @admin.register(Manufacturer)
@@ -17,5 +17,17 @@ class SocketAdmin(admin.ModelAdmin):
 
 @admin.register(SocketType)
 class SocketTypeAdmin(admin.ModelAdmin):
+    list_display = ('__str__',)
+    search_fields = ('title',)
+
+
+@admin.register(FormFactor)
+class FormFactorTypeAdmin(admin.ModelAdmin):
+    list_display = ('__str__',)
+    search_fields = ('title',)
+
+
+@admin.register(MemoryType)
+class MemoryTypeAdmin(admin.ModelAdmin):
     list_display = ('__str__',)
     search_fields = ('title',)

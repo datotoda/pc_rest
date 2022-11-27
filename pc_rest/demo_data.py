@@ -1,5 +1,6 @@
 from cpu.models import Cpu, Series
-from general.models import Manufacturer, Socket, SocketType
+from general.models import Manufacturer, Socket, SocketType, FormFactor, MemoryType
+from motherboard.models import Motherboard, Chipset
 
 
 def add_manufacturers():
@@ -9,6 +10,9 @@ def add_manufacturers():
 
     _add_manufacturers(title='Intel', link='https://www.intel.com')
     _add_manufacturers(title='Amd', link='https://www.amd.com/en')
+    _add_manufacturers(title='Asus', link='https://www.asus.com')
+    _add_manufacturers(title='Msi', link='https://www.msi.com')
+    _add_manufacturers(title='Gigabyte', link='https://www.gigabyte.com/')
 
 
 def add_series():
@@ -72,9 +76,91 @@ def add_cpu():
     _add_cpu(manufacturer='Intel', series='Core i9', socket='LGA1700', version='13900K', cores=24, threads=32)
 
 
-def main():
+def add_form_factor():
+    def _add_form_factor(title):
+        if not FormFactor.objects.filter(title=title).exists():
+            FormFactor(title=title).save()
+
+    _add_form_factor(title='ATX')
+    _add_form_factor(title='EATX')
+    _add_form_factor(title='Micro ATX')
+    _add_form_factor(title='Mini ITX')
+
+
+def add_memory_type():
+    def _add_memory_type(title):
+        if not MemoryType.objects.filter(title=title).exists():
+            MemoryType(title=title).save()
+
+    _add_memory_type(title='DDR3')
+    _add_memory_type(title='DDR4')
+    _add_memory_type(title='DDR5')
+
+
+def add_chipset():
+    def _add_chipset(title):
+        if not Chipset.objects.filter(title=title).exists():
+            Chipset(title=title).save()
+
+    _add_chipset(title='AMD X570')
+    _add_chipset(title='AMD B650')
+    _add_chipset(title='Intel Z390')
+    _add_chipset(title='Intel Z490')
+    _add_chipset(title='Intel B660')
+    _add_chipset(title='Intel B660')
+
+
+def add_motherboard():
+    def _add_motherboard(manufacturer, socket, form_factor, memory_type, chipset, title, memory_slots, max_memory):
+        if not Motherboard.objects.filter(manufacturer__title=manufacturer, title=title).exists():
+            manufacturer_obj, _ = Manufacturer.objects.get_or_create(title=manufacturer)
+            socket_obj, _ = Socket.objects.get_or_create(title=socket)
+            form_factor_obj, _ = FormFactor.objects.get_or_create(title=form_factor)
+            memory_type_obj, _ = MemoryType.objects.get_or_create(title=memory_type)
+            chipset_obj, _ = Chipset.objects.get_or_create(title=chipset)
+
+            Motherboard(manufacturer=manufacturer_obj,
+                        socket=socket_obj,
+                        form_factor=form_factor_obj,
+                        memory_type=memory_type_obj,
+                        chipset=chipset_obj,
+                        title=title,
+                        memory_slots=memory_slots,
+                        max_memory=max_memory).save()
+
+    _add_motherboard(manufacturer='Asus', socket='AM4', form_factor='ATX', memory_type='DDR4',
+                     chipset='AMD X570', title='TUF GAMING X570-PLUS (WI-FI)', memory_slots=4, max_memory=128)
+    _add_motherboard(manufacturer='Gigabyte', socket='AM5', form_factor='Micro ATX', memory_type='DDR5',
+                     chipset='AMD B650', title='B650M AORUS ELITE AX', memory_slots=4, max_memory=128)
+    _add_motherboard(manufacturer='Asus', socket='LGA1151', form_factor='ATX', memory_type='DDR4',
+                     chipset='Intel Z390', title='PRIME Z390-A', memory_slots=4, max_memory=128)
+    _add_motherboard(manufacturer='Msi', socket='LGA1200', form_factor='ATX', memory_type='DDR4',
+                     chipset='Intel Z490', title='MPG Z490 GAMING EDGE WIFI', memory_slots=4, max_memory=128)
+    _add_motherboard(manufacturer='Asus', socket='LGA1700', form_factor='Mini ITX', memory_type='DDR5',
+                     chipset='Intel B660', title='ROG STRIX B660-I GAMING WIFI', memory_slots=2, max_memory=64)
+    _add_motherboard(manufacturer='Gigabyte', socket='LGA1700', form_factor='Micro ATX', memory_type='DDR4',
+                     chipset='Intel B660', title='B660M DS3H', memory_slots=4, max_memory=128)
+
+
+def general_app():
     add_manufacturers()
-    add_series()
     add_socket_type()
     add_socket()
+    add_form_factor()
+    add_memory_type()
+
+
+def cpu_app():
+    add_series()
     add_cpu()
+
+
+def motherboard_app():
+    add_chipset()
+    add_motherboard()
+
+
+def main():
+    general_app()
+    cpu_app()
+    motherboard_app()

@@ -41,3 +41,25 @@ class SocketType(models.Model):
     class Meta:
         verbose_name = _('Socket Type')
         verbose_name_plural = _('Socket Types')
+
+
+class FormFactor(models.Model):
+    title = models.CharField(verbose_name=_('Title'), max_length=255)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _('Form Factor')
+        verbose_name_plural = _('Form Factors')
+
+
+class MemoryType(models.Model):
+    title = models.CharField(verbose_name=_('Title'), max_length=255)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _('Memory Type')
+        verbose_name_plural = _('Memory Types')
