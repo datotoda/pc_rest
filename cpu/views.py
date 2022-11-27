@@ -1,4 +1,4 @@
-from django.db.models import F, Count, Max, Min, Value, Case, When, Q
+from django.db.models import F, Count, Max, Min, Value, Case, When, Q, Subquery, OuterRef
 from django.db.models.functions import Concat
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from cpu.models import Cpu
 from cpu.serializers import CpuSerializer, CpuShortSerializer
+from motherboard.models import Motherboard
 
 
 class CpuViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,3 +57,18 @@ class CpuViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
         return Response({'additional_data': additional_data, 'cpu': serializer.data})
+
+    @action(detail=False)
+    def compatible_motherboards(self, request):
+        all_cpu_qs = self.get_queryset()
+
+        motherboards_sb_qs = Motherboard.objects.filter(socket=OuterRef('socket')).values('id').annotate(
+            title=Concat(F('manufacturer__title'), Value(' '), F('title'))
+        ).order_by('?')
+
+        result = all_cpu_qs.values('id').annotate(
+            cpu=Concat(F('manufacturer__title'), Value(' '), F('series__title'), Value(' '), F('version')),
+            motherboard=Subquery(motherboards_sb_qs.values('title')[:1])
+        )
+
+        return Response(result)
