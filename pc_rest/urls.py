@@ -19,6 +19,7 @@ from django.shortcuts import redirect
 
 urlpatterns = [
     path('cpu/', include('cpu.urls')),
+    path('motherboard/', include('motherboard.urls')),
     path('', lambda request: redirect(to='/cpu/')),  # temporary
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
