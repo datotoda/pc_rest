@@ -38,7 +38,7 @@ class Motherboard(models.Model):
     max_memory = models.PositiveIntegerField(verbose_name=_('Max Memory'))
 
     def __str__(self):
-        return self.title
+        return f'{self.manufacturer.title} {self.title}'
 
     class Meta:
         verbose_name = _('Motherboard')
