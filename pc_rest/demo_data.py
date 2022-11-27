@@ -1,4 +1,5 @@
-from cpu.models import Cpu, Manufacturer, Series, Socket, SocketType
+from cpu.models import Cpu, Series
+from general.models import Manufacturer, Socket, SocketType
 
 
 def add_manufacturers():

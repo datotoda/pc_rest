@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # My Apps
     'cpu.apps.CpuConfig',
+    'general.apps.GeneralConfig',
 
     # Third Party Apps
     'rest_framework',

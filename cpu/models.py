@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Cpu(models.Model):
     manufacturer = models.ForeignKey(
-        to='cpu.Manufacturer',
+        to='general.Manufacturer',
         verbose_name=_('Manufacturer'),
         related_name='cpus',
         on_delete=models.PROTECT
@@ -16,7 +16,7 @@ class Cpu(models.Model):
         on_delete=models.PROTECT
     )
     socket = models.ForeignKey(
-        to='cpu.Socket',
+        to='general.Socket',
         verbose_name=_('Socket'),
         related_name='cpus',
         on_delete=models.PROTECT
@@ -33,18 +33,6 @@ class Cpu(models.Model):
         verbose_name_plural = _('CPUs')
 
 
-class Manufacturer(models.Model):
-    title = models.CharField(verbose_name=_('Title'), max_length=255)
-    link = models.URLField(verbose_name=_('Link'), null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _('Manufacturer')
-        verbose_name_plural = _('Manufacturers')
-
-
 class Series(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=255)
 
@@ -54,32 +42,3 @@ class Series(models.Model):
     class Meta:
         verbose_name = _('Series')
         verbose_name_plural = _('Serieses')
-
-
-class Socket(models.Model):
-    socket_type = models.ForeignKey(
-        to='cpu.SocketType',
-        verbose_name=_('Socket Type'),
-        related_name='sockets',
-        on_delete=models.PROTECT
-    )
-    title = models.CharField(verbose_name=_('Title'), max_length=255)
-    pins = models.PositiveIntegerField(verbose_name=_('Pins'))
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _('Socket')
-        verbose_name_plural = _('Socket')
-
-
-class SocketType(models.Model):
-    title = models.CharField(verbose_name=_('Title'), max_length=255)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _('Socket Type')
-        verbose_name_plural = _('Socket Types')
