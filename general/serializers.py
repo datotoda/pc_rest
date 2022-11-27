@@ -15,7 +15,7 @@ class SocketTypeSerializer(serializers.ModelSerializer):
 
 
 class SocketSerializer(serializers.ModelSerializer):
-    socket_type = SocketTypeSerializer(many=False)
+    socket_type = serializers.CharField(source='socket_type.title')
 
     class Meta:
         model = Socket
