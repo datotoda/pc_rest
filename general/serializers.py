@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from general.models import Manufacturer, SocketType, Socket
+from general.models import Manufacturer, SocketType, Socket, FormFactor, MemoryType
 
 
 class ManufacturerSerializer(serializers.ModelSerializer):
@@ -20,3 +20,15 @@ class SocketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Socket
         fields = ('id', 'title', 'socket_type', 'pins')
+
+
+class FormFactorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormFactor
+        fields = ('id', 'title')
+
+
+class MemoryTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MemoryType
+        fields = ('id', 'title')
