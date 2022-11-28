@@ -2,8 +2,7 @@
 
 ### Instructions for demo data
 
-```python
-$ python3 manage.py shell
->>> from pc_rest.demo_data import main
->>> main()
+```bash
+$ python3 manage.py migrate
+$ python3 manage.py shell -c "from pc_rest.demo_data import main; main()"
 ```
