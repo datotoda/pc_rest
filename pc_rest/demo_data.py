@@ -3,7 +3,7 @@ from general.models import Manufacturer, Socket, SocketType, FormFactor, MemoryT
 from motherboard.models import Motherboard, Chipset
 
 
-def add_manufacturers():
+def add_manufacturer():
     def _add_manufacturers(title, link):
         if not Manufacturer.objects.filter(title=title).exists():
             Manufacturer(title=title, link=link).save()
@@ -28,7 +28,7 @@ def add_series():
     _add_series(title='Core i9')
 
 
-def add_socket_type():
+def add_sockettype():
     def _add_socket_type(title):
         if not SocketType.objects.filter(title=title).exists():
             SocketType(title=title).save()
@@ -54,9 +54,14 @@ def add_socket():
 def add_cpu():
     def _add_cpu(manufacturer, series, socket, version, cores, threads):
         if not Cpu.objects.filter(manufacturer__title=manufacturer, series__title=series, version=version).exists():
-            manufacturer_obj, _ = Manufacturer.objects.get_or_create(title=manufacturer)
+            if not Manufacturer.objects.filter(title=manufacturer).exists():
+                add_manufacturer()
+            if not Socket.objects.filter(title=socket).exists():
+                add_socket()
+
+            manufacturer_obj = Manufacturer.objects.get(title=manufacturer)
+            socket_obj = Socket.objects.get(title=socket)
             series_obj, _ = Series.objects.get_or_create(title=series)
-            socket_obj, _ = Socket.objects.get_or_create(title=socket)
 
             Cpu(manufacturer=manufacturer_obj,
                 series=series_obj,
@@ -76,7 +81,7 @@ def add_cpu():
     _add_cpu(manufacturer='Intel', series='Core i9', socket='LGA1700', version='13900K', cores=24, threads=32)
 
 
-def add_form_factor():
+def add_formfactor():
     def _add_form_factor(title):
         if not FormFactor.objects.filter(title=title).exists():
             FormFactor(title=title).save()
@@ -87,7 +92,7 @@ def add_form_factor():
     _add_form_factor(title='Mini ITX')
 
 
-def add_memory_type():
+def add_memorytype():
     def _add_memory_type(title):
         if not MemoryType.objects.filter(title=title).exists():
             MemoryType(title=title).save()
@@ -113,8 +118,12 @@ def add_chipset():
 def add_motherboard():
     def _add_motherboard(manufacturer, socket, form_factor, memory_type, chipset, title, memory_slots, max_memory):
         if not Motherboard.objects.filter(manufacturer__title=manufacturer, title=title).exists():
-            manufacturer_obj, _ = Manufacturer.objects.get_or_create(title=manufacturer)
-            socket_obj, _ = Socket.objects.get_or_create(title=socket)
+            if not Manufacturer.objects.filter(title=manufacturer).exists():
+                add_manufacturer()
+            if not Socket.objects.filter(title=socket).exists():
+                add_socket()
+            manufacturer_obj = Manufacturer.objects.get(title=manufacturer)
+            socket_obj = Socket.objects.get(title=socket)
             form_factor_obj, _ = FormFactor.objects.get_or_create(title=form_factor)
             memory_type_obj, _ = MemoryType.objects.get_or_create(title=memory_type)
             chipset_obj, _ = Chipset.objects.get_or_create(title=chipset)
@@ -143,11 +152,11 @@ def add_motherboard():
 
 
 def general_app():
-    add_manufacturers()
-    add_socket_type()
+    add_manufacturer()
+    add_sockettype()
     add_socket()
-    add_form_factor()
-    add_memory_type()
+    add_formfactor()
+    add_memorytype()
 
 
 def cpu_app():
