@@ -43,9 +43,9 @@ class MotherboardViewSet(viewsets.ReadOnlyModelViewSet):
             .values('manufacturer').annotate(count=Count('manufacturer')),
             'by_socket': all_motherboard_qs.values('id').annotate(socket=F('socket__title'))
             .values('socket').annotate(count=Count('socket')),
-            'by_form_factor': all_motherboard_qs.values('id').annotate(socket=F('form_factor__title'))
+            'by_form_factor': all_motherboard_qs.values('id').annotate(form_factor=F('form_factor__title'))
             .values('form_factor').annotate(count=Count('form_factor')),
-            'by_memory_type': all_motherboard_qs.values('id').annotate(socket=F('memory_type__title'))
+            'by_memory_type': all_motherboard_qs.values('id').annotate(memory_type=F('memory_type__title'))
             .values('memory_type').annotate(count=Count('memory_type')),
 
         }
