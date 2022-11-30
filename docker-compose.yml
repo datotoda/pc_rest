@@ -1,0 +1,17 @@
+version: '3'
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      net:
+        ipv4_address: 172.20.0.10
+networks:
+  net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1
