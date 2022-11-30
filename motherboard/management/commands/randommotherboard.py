@@ -16,8 +16,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         indent = None if options['no_indent'] else options['indent']
 
-        print(options)
-
         motherboard = Motherboard.objects.order_by('?').first()
         serializer = MotherboardSerializer(motherboard)
 
