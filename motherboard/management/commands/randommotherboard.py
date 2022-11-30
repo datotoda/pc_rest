@@ -11,10 +11,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--no-indent', action="store_true")
-        parser.add_argument('-i', '--indent', nargs='?', type=int)
+        parser.add_argument('-i', '--indent', default=4, type=int)
 
     def handle(self, *args, **options):
-        indent = None if options['no_indent'] else options['indent'] if options['indent'] else 4
+        indent = None if options['no_indent'] else options['indent']
 
         print(options)
 
