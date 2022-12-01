@@ -17,11 +17,18 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+
+from pc_rest.views import ProfileView
 
 urlpatterns = [
     path('cpu/', include('cpu.urls')),
     path('motherboard/', include('motherboard.urls')),
     path('admin/', admin.site.urls),
+    path('profile/', ProfileView.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 
@@ -31,7 +38,7 @@ urlpatterns = [
 def all_urls(request):
     urls = [url := request.build_absolute_uri()]
     for i in range(len(urlpatterns) - 2):
-        urls.append(url + urlpatterns[i].pattern.regex.pattern[1:])
+        urls.append(url + urlpatterns[i].pattern.regex.pattern[1:].rstrip('\\Z'))
     return Response(urls)
 
 
