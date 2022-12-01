@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     'rest_framework',
-    "debug_toolbar",
+    'rest_framework.authtoken',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
