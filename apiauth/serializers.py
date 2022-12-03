@@ -1,9 +1,12 @@
+from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from django.contrib.auth.models import User
+from rest_framework.reverse import reverse
 
 from apiauth.models import ActivationToken
+from apiauth.tasks import send_mail
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -47,7 +50,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
 
-        ActivationToken(user=user).save()
+        activation_token = ActivationToken(user=user)
+        activation_token.save()
+
+        url = self.context['request'].build_absolute_uri(reverse('activate', kwargs={'token': activation_token.key}))
+
+        context = {
+            'name': user.username,
+            'url': url
+        }
+
+        send_mail.delay(
+            subject='Activate pc_rest.com account',
+            body=render_to_string('apiauth/activation_mail.html', context=context),
+            to=[user.email]
+        )
 
         return user
 
