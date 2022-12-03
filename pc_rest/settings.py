@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'cpu.apps.CpuConfig',
     'motherboard.apps.MotherboardConfig',
     'general.apps.GeneralConfig',
+    'apiauth.apps.ApiauthConfig',
 
     # Third Party Apps
     'rest_framework',
