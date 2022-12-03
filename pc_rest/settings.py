@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
