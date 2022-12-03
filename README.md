@@ -6,6 +6,10 @@
 $ git clone https://github.com/datotoda/pc_rest.git
 $ cd pc_rest
 $ pip install -r requirements.txt
+$ cd pc_rest
+$ mv dotenv .env
+$ nano .env  # fill data
+$ cd ..
 $ python3 manage.py runserver
 ```
 

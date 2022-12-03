@@ -2,13 +2,13 @@ FROM python:3.9-slim
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apt update && apt install git -y
-
-RUN git clone https://github.com/datotoda/pc_rest.git /drf_src
-
 WORKDIR /drf_src
 
+COPY requirements.txt .
+
 RUN pip install -r requirements.txt
+
+COPY . .
 
 EXPOSE 8000
 

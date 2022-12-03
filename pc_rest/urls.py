@@ -18,10 +18,14 @@ from django.urls import path, include
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from pc_rest import views
+
 urlpatterns = [
     path('cpu/', include('cpu.urls')),
     path('motherboard/', include('motherboard.urls')),
+    path('apiauth/', include('apiauth.urls')),
     path('admin/', admin.site.urls),
+    path('profile/', views.ProfileView.as_view()),
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 
@@ -31,7 +35,7 @@ urlpatterns = [
 def all_urls(request):
     urls = [url := request.build_absolute_uri()]
     for i in range(len(urlpatterns) - 2):
-        urls.append(url + urlpatterns[i].pattern.regex.pattern[1:])
+        urls.append(url + urlpatterns[i].pattern.regex.pattern[1:].rstrip('\\Z'))
     return Response(urls)
 
 
