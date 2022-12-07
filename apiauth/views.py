@@ -1,11 +1,12 @@
+from django.contrib.auth.models import User
 from rest_framework import viewsets, mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from apiauth.models import ActivationToken
 from apiauth.serializers import RegistrationSerializer
+from apiauth.tokens import AccountActivationTokenGenerator
 
 
 class LoginAPIView(ObtainAuthToken):
@@ -16,6 +17,11 @@ class RegistrationViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = RegistrationSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({'info': 'You have successfully registered, check email for activation'},
+                        status=response.status_code, headers=response.headers)
 
 
 class TokenResetAPIView(ObtainAuthToken):
@@ -30,17 +36,16 @@ class TokenResetAPIView(ObtainAuthToken):
         return Response({'token': token.key})
 
 
-class ActivateAPIView(APIView):
+class ActivateAccountAPIView(APIView):
     authentication_classes = ()
     permission_classes = ()
 
-    def get(self, request, token, *args, **kwargs):
-        activation_tokens = ActivationToken.objects.filter(key=token).select_related('user')
-        if activation_tokens.exists():
-            activation_token = activation_tokens[0]
-            user = activation_token.user
+    def get(self, request, uid, token, *args, **kwargs):
+        user = User.objects.filter(id=uid)
+        token_generator = AccountActivationTokenGenerator()
+        if user.exists() and token_generator.check_token(user, token):
+            user = user[0]
             user.is_active = True
             user.save()
-            activation_token.delete()
             return Response({'success': 'account is activated'})
         return Response({'error': 'Token is invalid'})
