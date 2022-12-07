@@ -6,5 +6,5 @@ urlpatterns = [
     path('login/', views.LoginAPIView.as_view()),
     path('register/', views.RegistrationViewSet.as_view({'post': 'create'})),
     path('reset_token/', views.TokenResetAPIView.as_view()),
-    path('activate/<token>/', views.ActivateAPIView.as_view(), name='activate'),
+    path('activate/<uid>/<token>/', views.ActivateAccountAPIView.as_view(), name='activate'),
 ]
