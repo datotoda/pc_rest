@@ -13,7 +13,7 @@ COPY . .
 EXPOSE 8000
 
 # Fill database with demo data
-RUN python manage.py migrate && python manage.py filldemodata
+RUN python manage.py migrate && python manage.py fill_demo_data
 
 # Default admin user
 RUN export DJANGO_SUPERUSER_PASSWORD=admin &&  \

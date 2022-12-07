@@ -17,7 +17,7 @@ $ python3 manage.py runserver
 
 ```bash
 $ python3 manage.py migrate
-$ python3 manage.py filldemodata
+$ python3 manage.py fill_demo_data
 ```
 
 ## or you can use docker
