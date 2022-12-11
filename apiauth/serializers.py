@@ -1,3 +1,4 @@
+from django.contrib.auth.password_validation import validate_password
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -7,12 +8,14 @@ from rest_framework.reverse import reverse
 
 from apiauth.tasks import send_mail
 from apiauth.tokens import AccountActivationTokenGenerator
+from apiauth.validators import PasswordMatchValidator
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(
         label=_('Password'),
         style={'input_type': 'password'},
+        validators=[validate_password],
         trim_whitespace=False,
         write_only=True
     )
@@ -23,16 +26,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
-    def validate(self, attrs):
-        password_1 = attrs.get('password1')
-        password_2 = attrs.pop('password2')
-
-        if password_1 != password_2:
-            raise serializers.ValidationError({'error': 'passwords dont match'})
-
-        return super().validate(attrs)
-
     def create(self, validated_data):
+        validated_data.pop('password2')
+
         password = validated_data.pop('password1')
         user = User(is_active=False, **validated_data)
         user.set_password(password)
@@ -64,3 +60,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+        validators = [
+            PasswordMatchValidator(
+                fields=['password1', 'password2']
+            )
+        ]
