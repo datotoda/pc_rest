@@ -58,6 +58,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         return user
 
+    def to_representation(self, instance):
+        return {'info': 'You have successfully registered, check email for activation'}
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
