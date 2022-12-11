@@ -18,11 +18,6 @@ class RegistrationViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = ()
     serializer_class = RegistrationSerializer
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        return Response({'info': 'You have successfully registered, check email for activation'},
-                        status=response.status_code, headers=response.headers)
-
 
 class TokenResetAPIView(ObtainAuthToken):
     authentication_classes = ()
