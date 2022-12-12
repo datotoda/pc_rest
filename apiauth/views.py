@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework import viewsets, mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from apiauth.serializers import RegistrationSerializer
+from apiauth.serializers import RegistrationSerializer, PasswordResetLinkSendSerializer, PasswordResetSerializer
 from apiauth.tokens import AccountActivationTokenGenerator
 
 
@@ -43,4 +44,31 @@ class ActivateAccountAPIView(APIView):
             user.is_active = True
             user.save()
             return Response({'success': 'account is activated'})
+        return Response({'error': 'Token is invalid'})
+
+
+class PasswordResetAPIView(viewsets.GenericViewSet):
+    authentication_classes = ()
+    permission_classes = ()
+
+    def get_serializer_class(self):
+        if self.action == 'send_link':
+            return PasswordResetLinkSendSerializer
+        if self.action == 'password_reset':
+            return PasswordResetSerializer
+        return super().get_serializer_class()
+
+    def send_link(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)
+
+    def password_reset(self, request, uid, token, *args, **kwargs):
+        user_qs = User.objects.filter(id=uid)
+        token_generator = PasswordResetTokenGenerator()
+        if user_qs.exists() and token_generator.check_token(user_qs.first(), token):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.set_password(user=user_qs.first())
+            return Response(serializer.data)
         return Response({'error': 'Token is invalid'})
