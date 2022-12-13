@@ -26,6 +26,7 @@ urlpatterns = [
     path('apiauth/', include('apiauth.urls')),
     path('admin/', admin.site.urls),
     path('profile/', views.ProfileView.as_view()),
+    path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 
