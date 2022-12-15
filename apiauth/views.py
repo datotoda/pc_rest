@@ -12,6 +12,7 @@ from apiauth.tokens import AccountActivationTokenGenerator
 
 class LoginAPIView(ObtainAuthToken):
     authentication_classes = ()
+    renderer_classes = viewsets.GenericViewSet.renderer_classes
 
 
 class RegistrationViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -37,10 +38,10 @@ class ActivateAccountAPIView(APIView):
     permission_classes = ()
 
     def get(self, request, uid, token, *args, **kwargs):
-        user = User.objects.filter(id=uid)
+        user_qs = User.objects.filter(id=uid)
         token_generator = AccountActivationTokenGenerator()
-        if user.exists() and token_generator.check_token(user, token):
-            user = user[0]
+        if user_qs.exists() and token_generator.check_token(user_qs.first(), token):
+            user = user_qs.first()
             user.is_active = True
             user.save()
             return Response({'success': 'account is activated'})
