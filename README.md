@@ -7,9 +7,8 @@ $ git clone https://github.com/datotoda/pc_rest.git
 $ cd pc_rest
 $ pip install -r requirements.txt
 $ cd pc_rest
-$ mv dotenv .env
-$ nano .env  # fill data
-$ cd ..
+$ mv pc_rest/dotenv pc_rest/.env
+$ nano pc_rest/.env  # fill data
 $ python3 manage.py runserver
 ```
 
@@ -25,7 +24,9 @@ $ python3 manage.py fill_demo_data
 ```bash
 $ git clone https://github.com/datotoda/pc_rest.git
 $ cd pc_rest
-$ docker compose up -d
+$ mv pc_rest/dotenv pc_rest/.env
+$ nano pc_rest/.env  # fill data
+$ docker-compose up -d
 ```
 
 #### default super user
