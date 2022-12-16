@@ -1,5 +1,6 @@
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.db import transaction
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -29,14 +30,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password2')
-
         password = validated_data.pop('password1')
-        user = User(is_active=False, **validated_data)
-        user.set_password(password)
-        user.save()
 
-        activation_token_generator = AccountActivationTokenGenerator()
-        activation_token = activation_token_generator.make_token(user=user)
+        with transaction.atomic():
+            user = User(is_active=False, **validated_data)
+            user.set_password(password)
+            user.save()
+
+            activation_token_generator = AccountActivationTokenGenerator()
+            activation_token = activation_token_generator.make_token(user=user)
 
         url = self.context['request'].build_absolute_uri(
             reverse('activate', kwargs={'uid': user.id, 'token': activation_token})
@@ -47,11 +49,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'url': url
         }
 
-        send_mail.delay(
-            subject='Activate pc_rest.com account',
-            body=render_to_string('apiauth/activation_mail.html', context=context),
-            to=[user.email]
-        )
+        # send_mail.delay(
+        #     subject='Activate pc_rest.com account',
+        #     body=render_to_string('apiauth/activation_mail.html', context=context),
+        #     to=[user.email]
+        # )
 
         return user
 
